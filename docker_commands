@@ -18,6 +18,10 @@ docker rm $(docker ps -a -q)
 ## To remove all the images (forcefully)
 docker rmi $(docker images -q) -f
 
+
+## To access Kubernetes cluster bash shell 
+kubectl exec --stdin --tty techtrends-8585b864bc-zd4j6 -- /bin/bash
+
 ## Logs from the container running the TechTrends application
 LM-BJG5J:go srimal$ docker logs e8591daeee37116689e7856e33cb2f3b756b95dce370fb45ac9e7b69d4691ce9
  * Serving Flask app "app" (lazy loading)

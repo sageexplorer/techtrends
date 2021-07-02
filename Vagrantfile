@@ -1,13 +1,20 @@
 # set up the default terminal
 ENV["TERM"]="linux"
 
+
+
+
 Vagrant.configure("2") do |config|
   
   # set the image for the vagrant box
-  config.vm.box = "opensuse/Leap-15.2.x86_64"
+  config.vm.box =  "ubuntu/bionic64"
   ## Set the image version
   # config.vm.box_version = "15.2.31.212"
 
+  config.vm.provision :docker
+
+
+  
   # st the static IP for the vagrant box
   config.vm.network "private_network", ip: "192.168.50.4"
   

@@ -1,1 +1,1 @@
-{"name":"opensuse/Leap-15.2.x86_64","version":"15.2.31.455","provider":"virtualbox","directory":"boxes/opensuse-VAGRANTSLASH-Leap-15.2.x86_64/15.2.31.455/virtualbox"}
+{"name":"ubuntu/bionic64","version":"20210526.0.0","provider":"virtualbox","directory":"boxes/ubuntu-VAGRANTSLASH-bionic64/20210526.0.0/virtualbox"}
