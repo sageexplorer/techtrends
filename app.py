@@ -50,14 +50,18 @@ def about():
 # Health check 
 @app.route('/health')
 def health():
-    response_body = {'result': 'OK'}
-    status_code = 200
-    response = app.response_class(
-        response=json.dumps(response_body),
-        status=status_code,
-        mimetype='application/json')
+    try:
+        connection = get_db_connection()
+        connection.cursor()
+        connection.execute('SELECT * FROM posts')
+        connection.close()
+        app.logger.info('Heath check passed')
+        return {'result': 'OK - healthy'}
+    except Exception:
+        app.logger.info('Something went wrong during healthcheck')
+        return {'result': 'ERROR - unhealthy'}, 500
 
-    return response
+    
 
 
 # Define the post creation functionality 
