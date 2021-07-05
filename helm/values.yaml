@@ -22,7 +22,7 @@ resources:
     memory: 64Mi
 
 livenessProbe:
-  path: /health
+  path: /metrics
 
 readinessProbe:
-  path: /health
+  path: /metrics
