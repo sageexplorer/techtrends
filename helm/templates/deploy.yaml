@@ -23,18 +23,18 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: techtrends
         ports:
-        - containerPort: {{ .Values.ports.containerPort }}
+        - containerPort: {{ .Values.containerPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         livenessProbe:
           httpGet:
             path: {{ .Values.livenessProbe.path }}
-            port: {{ .Values.ports.containerPort }}
+            port: {{ .Values.containerPort }}
           initialDelaySeconds: 5
           periodSeconds: 5
         readinessProbe:
           httpGet:
             path: {{ .Values.readinessProbe.path }}
-            port: {{ .Values.readinessProbe.port }}
+            port: {{ .Values.containerPort }}
           initialDelaySeconds: 5
           periodSeconds: 10
