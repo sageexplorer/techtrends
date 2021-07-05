@@ -47,6 +47,19 @@ def post(post_id):
 def about():
     return render_template('about.html')
 
+# Health check 
+@app.route('/health')
+def health():
+    response_body = {'result': 'OK'}
+    status_code = 200
+    response = app.response_class(
+        response=json.dumps(response_body),
+        status=status_code,
+        mimetype='application/json')
+
+    return response
+
+
 # Define the post creation functionality 
 @app.route('/create', methods=('GET', 'POST'))
 def create():
