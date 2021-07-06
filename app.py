@@ -45,13 +45,16 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
+      app.logger.info(f'Article not found!')  
       return render_template('404.html'), 404
     else:
+      app.logger.info(f'Article {post["title"]} retrieved!')
       return render_template('post.html', post=post)
 
 # Define the About Us page
 @app.route('/about')
 def about():
+    app.logger.info('About us page is retrieved!')
     return render_template('about.html')
 
 # Health check 
@@ -89,7 +92,7 @@ def create():
                          (title, content))
             connection.commit()
             connection.close()
-
+            app.logger.info(f'New Article {title} is created! ')
             return redirect(url_for('index'))
 
     return render_template('create.html')
@@ -108,7 +111,7 @@ def metrics():
         app.logger.info('Metrics request successfull')
         return response
     except Exception:
-        app.logger.info( 'Metrics gatheringfalied!')
+        app.logger.info( 'Metrics gathering falied!')
         return {'result': 'ERROR'}, 500
 
 # start the application on port 3111
