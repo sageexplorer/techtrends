@@ -3,10 +3,15 @@ import sqlite3
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
 import logging
+
+#creare a count tracker for DB queries
+def count():
+    count.counter += 1
+    return count.counter
+count.counter = 0
+
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
-
-
 def get_db_connection():
     connection = sqlite3.connect('database.db')
     connection.row_factory = sqlite3.Row
@@ -18,6 +23,7 @@ def get_post(post_id):
     post = connection.execute('SELECT * FROM posts WHERE id = ?',
                         (post_id,)).fetchone()
     connection.close()
+    count()
     return post
 
 # Define the Flask application
@@ -30,6 +36,7 @@ def index():
     connection = get_db_connection()
     posts = connection.execute('SELECT * FROM posts').fetchall()
     connection.close()
+    count()
     return render_template('index.html', posts=posts)
 
 # Define how each individual article is rendered 
@@ -48,19 +55,22 @@ def about():
     return render_template('about.html')
 
 # Health check 
-@app.route('/health')
+@app.route('/healthz', methods=('GET', 'POST'))
 def health():
     try:
         connection = get_db_connection()
-        connection.cursor()
-        connection.execute('SELECT * FROM posts')
+        posts = connection.execute('SELECT * FROM posts').fetchall()
         connection.close()
-        app.logger.info('Heath check passed')
-        return {'result': 'OK - healthy'}
+        response = app.response_class(
+            response=json.dumps({"status":"success"}),
+            status=200,
+            mimetype='application/json'
+            )
+        app.logger.info('Healthcheck is successfull!')
+        return response
     except Exception:
-        app.logger.info('Something went wrong during healthcheck')
-        return {'result': 'ERROR - unhealthy'}, 500
-
+        app.logger.info('Healthcheck falied!')
+        return {'result': 'ERROR - unhealthy'}, 500   
     
 
 
@@ -86,14 +96,20 @@ def create():
 
 @app.route('/metrics')
 def metrics():
-    response = app.response_class(
-        response=json.dumps({"status":"success","code":0,"data":{"PostCount":140}}),
-        status=200,
-        mimetype='application/json'
-    )
-    app.logger.info('Metrics request successfull')
-    return response
-    
+    try:
+        connection = get_db_connection()
+        posts = len(connection.execute('SELECT * FROM posts').fetchall())
+        connection.close()
+        response = app.response_class(
+            response=json.dumps({"status":"success","code": count(),"data":{"PostCount":posts}}),
+            status=200,
+            mimetype='application/json'
+        )
+        app.logger.info('Metrics request successfull')
+        return response
+    except Exception:
+        app.logger.info( 'Metrics gatheringfalied!')
+        return {'result': 'ERROR'}, 500
 
 # start the application on port 3111
 if __name__ == "__main__":
