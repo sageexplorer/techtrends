@@ -25,4 +25,4 @@ livenessProbe:
   path: /metrics
 
 readinessProbe:
-  path: /metrics
+  path: /healthz
